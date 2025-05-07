@@ -12,7 +12,7 @@ This tool automates the process of checking FortiGate firewall configurations ag
 ## Implementations
 
 This tool is available in two implementations:
-1. Bash script (`fortigate-cis-check.sh`)
+1. Bash script (`fortigate_cis_checker.sh`)
 2. Python script (`fortigate_cis_checker.py`)
 
 Choose the implementation that best suits your environment and requirements.
