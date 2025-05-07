@@ -5,11 +5,11 @@ import re
 from datetime import datetime
 import csv
 
-class FortigateCISAudit:
+class FortiGateCISAudit:
     def __init__(self, config_file):
         self.config_file = config_file
-        self.csv_file = f"FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-        self.html_file = f"FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        self.csv_file = f"FortiGate_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        self.html_file = f"FortiGate_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         # Load the config content during initialization
         try:
             with open(self.config_file, 'r') as f:
@@ -20,7 +20,7 @@ class FortigateCISAudit:
 
     def print_banner(self):
         print("========================================")
-        print("Tool: Fortigate CIS Benchmark Audit Tool")
+        print("Tool: FortiGate CIS Benchmark Audit Tool")
         print("Creator: Priyam Patel")
         print("========================================")
 
@@ -639,11 +639,11 @@ end"""
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python3 fortigate_cis_audit.py <config_file>")
+        print("Usage: python3 FortiGate_cis_audit.py <config_file>")
         sys.exit(1)
 
     config_file = sys.argv[1]
-    auditor = FortigateCISAudit(config_file)
+    auditor = FortiGateCISAudit(config_file)
     auditor.print_banner()
     
     # Run all checks and collect results
