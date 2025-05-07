@@ -1,10 +1,10 @@
-# Fortigate CIS Benchmark Checker
+# FortiGate CIS Benchmark Checker
 
 ## Purpose
 
-This tool automates the process of checking Fortigate firewall configurations against CIS (Center for Internet Security) benchmarks. It helps security professionals and network administrators to:
+This tool automates the process of checking FortiGate firewall configurations against CIS (Center for Internet Security) benchmarks. It helps security professionals and network administrators to:
 
-- Audit Fortigate configurations for security best practices
+- Audit FortiGate configurations for security best practices
 - Identify potential security misconfigurations
 - Generate detailed reports in both CSV and HTML formats
 - Track compliance with CIS security standards
@@ -32,7 +32,7 @@ Choose the implementation that best suits your environment and requirements.
 
 ### For Bash Implementation
 - Bash shell environment (version 4.0 or higher)
-- Access to Fortigate configuration file
+- Access to FortiGate configuration file
 - Read permissions for the configuration file
 - Minimum 100MB free disk space for reports
 - Internet connectivity (optional, for updates)
@@ -43,7 +43,7 @@ Choose the implementation that best suits your environment and requirements.
   ```
   pip install argparse logging typing
   ```
-- Access to Fortigate configuration file
+- Access to FortiGate configuration file
 - Read permissions for the configuration file
 
 ## Installation
@@ -115,7 +115,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Note
 
-- This tool is designed for Fortigate version 7.0.x configurations
+- This tool is designed for FortiGate version 7.0.x configurations
 - Results may vary for other versions
 - Always review results and recommendations before implementing changes
 - Backup your configuration before making any changes
@@ -132,4 +132,4 @@ chmod +x fortigate-csi-check.sh
 2. Invalid configuration file
 - Ensure the configuration file is in plain text format
 - Verify file permissions
-- Check for file corruptio
+- Check for file corruption
