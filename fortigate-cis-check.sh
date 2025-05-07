@@ -4,7 +4,7 @@
 
 # Tool information banner
 echo "========================================"
-echo "Tool: Fortigate CIS Benchmark Audit Tool"
+echo "Tool: FortiGate CIS Benchmark Audit Tool"
 echo "Creator: Priyam Patel"
 echo "========================================"
 
@@ -481,7 +481,7 @@ fi
 
 config_file=$1
 
-CSV_FILE="FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_$(date +"%Y%m%d_%H%M%S").csv"
+CSV_FILE="FortiGate_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_$(date +"%Y%m%d_%H%M%S").csv"
 
 echo "Checking CIS benchmarks..."
 
@@ -956,11 +956,11 @@ total_manual_checks=$(grep -c "Manual" "$CSV_FILE")
 total_pass=$(grep -c "PASS" "$CSV_FILE")
 total_fail=$(grep -c "FAIL" "$CSV_FILE")
 
-HTML_FILE="FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_$(date +"%Y%m%d_%H%M%S").html"
+HTML_FILE="FortiGate_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_$(date +"%Y%m%d_%H%M%S").html"
 
 echo "<html>
 <head>
-    <title>FORTIGATE CIS Benchmark Audit Report</title>
+    <title>FortiGate CIS Benchmark Audit Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -1009,9 +1009,9 @@ echo "<html>
     </style>
 </head>
 <body>
-    <h1>FORTIGATE CIS Benchmark Audit Report</h1>
+    <h1>FortiGate CIS Benchmark Audit Report</h1>
     <div class='summary'>
-        <p><strong>Tool:</strong> Fortigate CIS Benchmark Audit Tool</p>
+        <p><strong>Tool:</strong> FortiGate CIS Benchmark Audit Tool</p>
         <p><strong>Creator:</strong> Priyam Patel</p>
         <p><strong>Total CIS Benchmark Checks:</strong> $total_checks</p>
         <p><strong>Total Automated Checks:</strong> $(($total_checks - $total_manual_checks))</p>
