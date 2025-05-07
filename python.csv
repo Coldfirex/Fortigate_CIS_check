@@ -1,5 +1,5 @@
 Benchmark ID,Description,Result,Fix Location,Fix Commands
-check_admin_concurrent_sessions,,FAIL: Concurrent admin sessions not properly limited,Location not specified,No fix commands available
+check_admin_concurrent_sessions,,FAIL: Concurrent admin sessions not properly limited,Location not specified,No fix commands available 
 check_admin_https,,FAIL: HTTP access is enabled,Location not specified,No fix commands available
 check_admin_https_redirect,,PASS: Admin HTTPS redirect is enabled,Location not specified,No fixes needed
 check_admin_lockout,,PASS: Administrator account lockout is enabled,Location not specified,No fixes needed
