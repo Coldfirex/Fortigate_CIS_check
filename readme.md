@@ -2,6 +2,7 @@
 
 ##
 Synced from Priyam Patel's repository.
+
 Focused on
   - Enhancing the python implementation
   - Exanded CIS Controls checks
