@@ -7,6 +7,8 @@ Focused on:
   - Enhancing the python implementation
   - Exanded CIS Controls checks
   - Additional Best Practices checks
+  - Including Hostname and Firmware levels in report
+  - Store output in a dedicated folder
   - Scanning multiple config files at same time
   - Split out check definitions into own file for easier maintenance
   - Enhanced logging, auditing, and validation
