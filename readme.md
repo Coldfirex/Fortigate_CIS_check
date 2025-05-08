@@ -1,5 +1,14 @@
 # FortiGate CIS Benchmark Checker
 
+##
+Synced from Priyam Patel's repository.
+Focused on
+  - Enhancing the python implementation
+  - Exanded CIS Controls checks
+  - Additional Best Practices checks
+  - Scanning multiple config files at same time
+  - Enhanced logging, auditing, and validation
+
 ## Purpose
 
 This tool automates the process of checking FortiGate firewall configurations against CIS (Center for Internet Security) benchmarks. It helps security professionals and network administrators to:
@@ -108,7 +117,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-[Priyam Patel](https://www.linkedin.com/in/priyam-patel-450307206/){:target="_blank"}
+[Priyam Patel](https://www.linkedin.com/in/priyam-patel-450307206/)
 
 ## Version
 
