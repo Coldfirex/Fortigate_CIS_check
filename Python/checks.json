@@ -1,0 +1,703 @@
+[
+    {
+        "id": "1.1.1",
+        "description": "Ensure 'admin-timeout' is set to 5 minutes or less",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system global", "negated": false},
+                {"pattern": "set admin-timeout [1-5]", "negated": false}
+            ]
+        },
+        "result_message": {
+            "pass": "Admin timeout is set to 5 minutes or less",
+            "fail": "Admin timeout is not properly configured"
+        },
+        "fix_commands": "config system global\n    set admin-timeout 5\nend"
+    },
+    {
+        "id": "1.1.2",
+        "description": "Ensure 'admin-ssh-grace-time' is set to 60 seconds or less",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system global", "negated": false},
+                {"pattern": "set admin-ssh-grace-time [1-6][0-9]", "negated": false}
+            ]
+        },
+        "result_message": {
+            "pass": "SSH grace time is set to 60 seconds or less",
+            "fail": "SSH grace time exceeds 60 seconds"
+        },
+        "fix_commands": "config system global\n    set admin-ssh-grace-time 60\nend"
+    },
+    {
+        "id": "1.1.3",
+        "description": "Ensure SSH v1 is disabled",
+        "logic": {
+            "type": "negated_grep",
+            "patterns": ["set admin-ssh-v1 enable"]
+        },
+        "result_message": {
+            "pass": "SSH v1 is disabled",
+            "fail": "SSH v1 is enabled"
+        },
+        "fix_commands": "config system global\n    set admin-ssh-v1 disable\nend"
+    },
+    {
+        "id": "1.1.4",
+        "description": "Ensure concurrent admin sessions is set to 1",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system global", "negated": false},
+                {"pattern": "set admin-concurrent-sessions 1", "negated": false}
+            ]
+        },
+        "result_message": {
+            "pass": "Concurrent admin sessions limited to 1",
+            "fail": "Concurrent admin sessions not properly limited"
+        },
+        "fix_commands": "config system global\n    set admin-concurrent-sessions 1\nend"
+    },
+    {
+        "id": "1.1.5",
+        "description": "Ensure default 'admin' port is changed",
+        "logic": {
+            "type": "negated_grep",
+            "patterns": ["set admin-port 80"]
+        },
+        "result_message": {
+            "pass": "Default admin port is changed",
+            "fail": "Default admin port (80) is still in use"
+        },
+        "fix_commands": "config system global\n    set admin-port 8443\nend"
+    },
+    {
+        "id": "1.2.1",
+        "description": "Ensure trusted hosts are configured for all admin accounts",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system admin", "set trustedhost"]
+        },
+        "result_message": {
+            "pass": "Trusted hosts are configured",
+            "fail": "Trusted hosts are not configured"
+        },
+        "fix_commands": "config system admin\n    edit \"admin\"\n        set trustedhost 192.168.1.0/24 10.0.0.0/24\n    next\nend"
+    },
+    {
+        "id": "1.2.2",
+        "description": "Ensure password policy is enabled",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": [
+                "set status enable",
+                "set minimum-length 8",
+                "set must-contain upper-case-letter lower-case-letter number special-character",
+                "set change-4-characters enable",
+                "set expire-status enable",
+                "set expire-day 90"
+            ]
+        },
+        "result_message": {
+            "pass": "Password policy is properly configured",
+            "fail": "Password policy is not properly configured"
+        },
+        "fix_commands": "config system password-policy\n    set status enable\n    set minimum-length 8\n    set must-contain upper-case-letter lower-case-letter number special-character\n    set change-4-characters enable\n    set expire-status enable\n    set expire-day 90\nend"
+    },
+    {
+        "id": "1.2.3",
+        "description": "Ensure strong password hash algorithm is used",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system password-policy", "set hash sha256"]
+        },
+        "result_message": {
+            "pass": "Strong password hash algorithm is used",
+            "fail": "Weak password hash algorithm in use"
+        },
+        "fix_commands": "config system password-policy\n    set hash sha256\nend"
+    },
+    {
+        "id": "1.2.4",
+        "description": "Ensure administrator account lockout is enabled",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set admin-lockout-threshold", "set admin-lockout-duration"]
+        },
+        "result_message": {
+            "pass": "Administrator account lockout is enabled",
+            "fail": "Administrator account lockout is not enabled"
+        },
+        "fix_commands": "config system global\n    set admin-lockout-threshold 3\n    set admin-lockout-duration 300\nend"
+    },
+    {
+        "id": "1.3.1",
+        "description": "Ensure interfaces have trusted hosts configured",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system interface", "set allowaccess", "set trusted-hosts"]
+        },
+        "result_message": {
+            "pass": "Interface trusted hosts are configured",
+            "fail": "Interface trusted hosts are not configured"
+        },
+        "fix_commands": "config system interface\n    edit \"port1\"\n        set allowaccess ping https ssh\n        set trusted-hosts 192.168.1.0/24\n    next\nend"
+    },
+    {
+        "id": "1.3.2",
+        "description": "Ensure default admin profile is not used",
+        "logic": {
+            "type": "negated_grep",
+            "patterns": ["set accprofile default"]
+        },
+        "result_message": {
+            "pass": "Default admin profile is not used",
+            "fail": "Default admin profile is in use"
+        },
+        "fix_commands": "config system admin\n    edit \"admin\"\n        set accprofile \"custom_profile\"\n    next\nend"
+    },
+    {
+        "id": "1.3.3",
+        "description": "Ensure admin password change on first login",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system admin", "set force-password-change enable"]
+        },
+        "result_message": {
+            "pass": "Admin password change on first login is enabled",
+            "fail": "Admin password change on first login is not enabled"
+        },
+        "fix_commands": "config system admin\n    edit \"admin\"\n        set force-password-change enable\n    next\nend"
+    },
+    {
+        "id": "2.1.1",
+        "description": "Ensure strong encryption is used",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set strong-crypto enable"]
+        },
+        "result_message": {
+            "pass": "Strong encryption is enabled",
+            "fail": "Strong encryption is not enabled"
+        },
+        "fix_commands": "config system global\n    set strong-crypto enable\nend"
+    },
+    {
+        "id": "2.1.2",
+        "description": "Ensure only approved SSL/TLS versions are used",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "set ssl-min-proto-version tls1-2", "negated": false},
+                {"pattern": "ssl-min-proto-version ssl3", "negated": true},
+                {"pattern": "ssl-min-proto-version tls1-0", "negated": true},
+                {"pattern": "ssl-min-proto-version tls1-1", "negated": true}
+            ]
+        },
+        "result_message": {
+            "pass": "Only approved SSL/TLS versions are enabled",
+            "fail": "Insecure SSL/TLS versions are enabled"
+        },
+        "fix_commands": "config system global\n    set ssl-min-proto-version tls1-2\nend"
+    },
+    {
+        "id": "2.1.3",
+        "description": "Ensure FIPS mode is enabled",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set fips-mode enable"]
+        },
+        "result_message": {
+            "pass": "FIPS mode is enabled",
+            "fail": "FIPS mode is not enabled"
+        },
+        "fix_commands": "config system global\n    set fips-mode enable\nend"
+    },
+    {
+        "id": "2.1.10",
+        "description": "Ensure management GUI listens on secure TLS version",
+        "logic": {
+            "type": "tls_versions",
+            "forbidden_versions": ["tls1-0", "tls1-1", "tlsv1-0", "tlsv1-1"]
+        },
+        "result_message": {
+            "pass": "Secure TLS on Management GUI is enabled",
+            "fail": "Secure TLS on Management GUI is not enabled",
+            "pass_default": "Secure TLS on Management GUI is enabled (default, no insecure versions configured)"
+        },
+        "fix_commands": "config system global\n    set admin-https-ssl-versions tlsv1-2 tlsv1-3\nend"
+    },
+    {
+        "id": "2.2.1",
+        "description": "Ensure at least two NTP servers are configured",
+        "logic": {
+            "type": "count_grep",
+            "section": "config system ntp",
+            "pattern": "set server",
+            "min_count": 2
+        },
+        "result_message": {
+            "pass": "At least two NTP servers are configured",
+            "fail": "Less than two NTP servers are configured"
+        },
+        "fix_commands": "config system ntp\n    set ntpsync enable\n    set type custom\n    set server \"0.pool.ntp.org\" \"1.pool.ntp.org\"\nend"
+    },
+    {
+        "id": "2.2.2",
+        "description": "Ensure administrative access via HTTPS only",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system interface", "negated": false},
+                {"pattern": "set allowaccess https", "negated": false},
+                {"pattern": "set allowaccess http", "negated": true}
+            ]
+        },
+        "result_message": {
+            "pass": "Administrative access is HTTPS only",
+            "fail": "HTTP access is enabled"
+        },
+        "fix_commands": "config system interface\n    edit \"port1\"\n        set allowaccess https\n        unset allowaccess http\n    next\nend"
+    },
+    {
+        "id": "2.3.1",
+        "description": "Check DNS server configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system dns"]
+        },
+        "result_message": {
+            "pass": "DNS server is configured",
+            "fail": "DNS server is not configured"
+        },
+        "fix_commands": "config system dns\n    set primary 8.8.8.8\n    set secondary 8.8.4.4\nend"
+    },
+    {
+        "id": "2.3.2",
+        "description": "Check intra-zone traffic configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["set intra-zone-deny enable"]
+        },
+        "result_message": {
+            "pass": "Intra-zone traffic is not always allowed",
+            "fail": "Intra-zone traffic is always allowed"
+        },
+        "fix_commands": "config system zone\n    edit \"internal\"\n        set intra-zone-deny enable\n    next\nend"
+    },
+    {
+        "id": "2.3.3",
+        "description": "Check WAN management services",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system interface", "negated": false},
+                {"pattern": "set allowaccess ping http", "negated": true}
+            ]
+        },
+        "result_message": {
+            "pass": "Management related services are disabled on WAN port",
+            "fail": "Management related services are enabled on WAN port"
+        },
+        "fix_commands": "config system interface\n    edit \"wan1\"\n        unset allowaccess ping http\n        unset allowaccess https ssh\n    next\nend"
+    },
+    {
+        "id": "2.3.4",
+        "description": "Check pre-login banner configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set pre-login-banner"]
+        },
+        "result_message": {
+            "pass": "Pre-Login Banner is set",
+            "fail": "Pre-Login Banner is not set"
+        },
+        "fix_commands": "config system global\n    set pre-login-banner enable\nend\nconfig system replacemsg admin \"pre-login-banner\"\n    set buffer \"Unauthorized access prohibited\"\nend"
+    },
+    {
+        "id": "2.3.5",
+        "description": "Check post-login banner configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set post-login-banner"]
+        },
+        "result_message": {
+            "pass": "Post-Login Banner is set",
+            "fail": "Post-Login Banner is not set"
+        },
+        "fix_commands": "config system global\n    set post-login-banner enable\nend\nconfig system replacemsg admin \"post-login-banner\"\n    set buffer \"Authorized users only\"\nend"
+    },
+    {
+        "id": "2.3.6",
+        "description": "Check timezone configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set timezone"]
+        },
+        "result_message": {
+            "pass": "Timezone is properly configured",
+            "fail": "Timezone is not properly configured"
+        },
+        "fix_commands": "config system global\n    set timezone 04\nend"
+    },
+    {
+        "id": "2.3.7",
+        "description": "Check NTP configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system ntp", "set server"]
+        },
+        "result_message": {
+            "pass": "Correct system time is configured through NTP",
+            "fail": "Correct system time is not configured through NTP"
+        },
+        "fix_commands": "config system ntp\n    set ntpsync enable\n    set server \"0.pool.ntp.org\"\nend"
+    },
+    {
+        "id": "2.3.8",
+        "description": "Check hostname configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set hostname"]
+        },
+        "result_message": {
+            "pass": "Hostname is set",
+            "fail": "Hostname is not set"
+        },
+        "fix_commands": "config system global\n    set hostname \"FortiGate\"\nend"
+    },
+    {
+        "id": "2.3.9",
+        "description": "Check USB firmware and configuration installation",
+        "logic": {
+            "type": "negated_grep",
+            "patterns": ["config system global", "set usb-auto-install"]
+        },
+        "result_message": {
+            "pass": "USB Firmware and configuration installation is disabled",
+            "fail": "USB Firmware and configuration installation is enabled"
+        },
+        "fix_commands": "config system global\n    set usb-auto-install disable\nend"
+    },
+    {
+        "id": "2.3.10",
+        "description": "Check global strong encryption settings",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set strong-crypto"]
+        },
+        "result_message": {
+            "pass": "Global Strong Encryption is enabled",
+            "fail": "Global Strong Encryption is not enabled"
+        },
+        "fix_commands": "config system global\n    set strong-crypto enable\nend"
+    },
+    {
+        "id": "2.3.11",
+        "description": "Check password policy configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set password-policy"]
+        },
+        "result_message": {
+            "pass": "Password Policy is enabled",
+            "fail": "Password Policy is not enabled"
+        },
+        "fix_commands": "config system password-policy\n    set status enable\nend"
+    },
+    {
+        "id": "2.3.12",
+        "description": "Check password retries and lockout configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set admin-lockout"]
+        },
+        "result_message": {
+            "pass": "Administrator password retries and lockout time are configured",
+            "fail": "Administrator password retries and lockout time are not configured"
+        },
+        "fix_commands": "config system global\n    set admin-lockout-threshold 3\n    set admin-lockout-duration 300\nend"
+    },
+    {
+        "id": "2.3.13",
+        "description": "Check SNMPv3 configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system snmp", "set v3-only"]
+        },
+        "result_message": {
+            "pass": "Only SNMPv3 is enabled",
+            "fail": "Only SNMPv3 is not enabled"
+        },
+        "fix_commands": "config system snmp sysinfo\n    set v3-only enable\nend"
+    },
+    {
+        "id": "2.3.14",
+        "description": "Check idle timeout configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set admin-sessions-timeout"]
+        },
+        "result_message": {
+            "pass": "Idle timeout time is configured",
+            "fail": "Idle timeout time is not configured"
+        },
+        "fix_commands": "config system global\n    set admin-sessions-timeout 300\nend"
+    },
+    {
+        "id": "2.3.15",
+        "description": "Check High Availability configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system ha"]
+        },
+        "result_message": {
+            "pass": "High Availability configuration is enabled",
+            "fail": "High Availability configuration is not enabled"
+        },
+        "fix_commands": "config system ha\n    set group-id 1\n    set mode a-p\n    set hbdev \"port1\" 50\nend"
+    },
+    {
+        "id": "2.3.16",
+        "description": "Check HA monitor interfaces configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system ha", "set monitor-interface"]
+        },
+        "result_message": {
+            "pass": "'Monitor Interfaces' for High Availability devices is enabled",
+            "fail": "'Monitor Interfaces' for High Availability devices is not enabled"
+        },
+        "fix_commands": "config system ha\n    set monitor \"port1\" \"port2\"\nend"
+    },
+    {
+        "id": "2.3.17",
+        "description": "Check antivirus definition updates configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config antivirus settings", "set update-schedule enable"]
+        },
+        "result_message": {
+            "pass": "Antivirus definition updates are enabled",
+            "fail": "Antivirus definition updates are not enabled"
+        },
+        "fix_commands": "config antivirus settings\n    set update-schedule enable\nend"
+    },
+    {
+        "id": "2.3.18",
+        "description": "Check IPS signature updates configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config ips global", "set database regular"]
+        },
+        "result_message": {
+            "pass": "IPS signature updates are configured",
+            "fail": "IPS signature updates are not configured"
+        },
+        "fix_commands": "config ips global\n    set database regular\nend"
+    },
+    {
+        "id": "2.3.19",
+        "description": "Check SSL/SSH inspection configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config firewall ssl-ssh-profile", "set inspect-all"]
+        },
+        "result_message": {
+            "pass": "SSL/SSH inspection is properly configured",
+            "fail": "SSL/SSH inspection is not properly configured"
+        },
+        "fix_commands": "config firewall ssl-ssh-profile\n    edit \"ssl-inspection\"\n        set inspect-all enable\n    next\nend"
+    },
+    {
+        "id": "2.3.20",
+        "description": "Check web filtering configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config webfilter profile", "set web-filter-activation enable"]
+        },
+        "result_message": {
+            "pass": "Web filtering is enabled",
+            "fail": "Web filtering is not enabled"
+        },
+        "fix_commands": "config webfilter profile\n    edit \"default\"\n        set web-filter-activation enable\n    next\nend"
+    },
+    {
+        "id": "2.3.21",
+        "description": "Check application control configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config application list", "set deep-app-inspection enable"]
+        },
+        "result_message": {
+            "pass": "Application control is properly configured",
+            "fail": "Application control is not properly configured"
+        },
+        "fix_commands": "config application list\n    edit \"default\"\n        set deep-app-inspection enable\n    next\nend"
+    },
+    {
+        "id": "2.3.22",
+        "description": "Check DoS policy configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config firewall DoS-policy", "set status enable"]
+        },
+        "result_message": {
+            "pass": "DoS protection is enabled",
+            "fail": "DoS protection is not enabled"
+        },
+        "fix_commands": "config firewall DoS-policy\n    edit 1\n        set status enable\n        set interface \"wan1\"\n    next\nend"
+    },
+    {
+        "id": "2.3.23",
+        "description": "Check admin HTTPS redirect configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set admin-https-redirect enable"]
+        },
+        "result_message": {
+            "pass": "Admin HTTPS redirect is enabled",
+            "fail": "Admin HTTPS redirect is not enabled"
+        },
+        "fix_commands": "config system global\n    set admin-https-redirect enable\nend"
+    },
+    {
+        "id": "2.3.24",
+        "description": "Check SSH grace time configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system global", "set admin-ssh-grace-time 120"]
+        },
+        "result_message": {
+            "pass": "SSH grace time is properly configured",
+            "fail": "SSH grace time is not properly configured"
+        },
+        "fix_commands": "config system global\n    set admin-ssh-grace-time 120\nend"
+    },
+    {
+        "id": "2.3.25",
+        "description": "Check SSH port configuration",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config system global", "negated": false},
+                {"pattern": "set admin-ssh-port 22", "negated": true}
+            ]
+        },
+        "result_message": {
+            "pass": "SSH port is not using default port 22",
+            "fail": "SSH port is using default port 22"
+        },
+        "fix_commands": "config system global\n    set admin-ssh-port 2222\nend"
+    },
+    {
+        "id": "2.3.26",
+        "description": "Check syslog server configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config log syslogd setting", "set status enable"]
+        },
+        "result_message": {
+            "pass": "Syslog server is configured",
+            "fail": "Syslog server is not configured"
+        },
+        "fix_commands": "config log syslogd setting\n    set status enable\n    set server \"192.168.1.100\"\nend"
+    },
+    {
+        "id": "2.3.27",
+        "description": "Check log disk usage configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config log disk setting", "set full-first-warning"]
+        },
+        "result_message": {
+            "pass": "Log disk usage alerts are configured",
+            "fail": "Log disk usage alerts are not configured"
+        },
+        "fix_commands": "config log disk setting\n    set full-first-warning enable\n    set full-first-warning-threshold 75\nend"
+    },
+    {
+        "id": "2.3.28",
+        "description": "Check FortiAnalyzer logging configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config log fortianalyzer setting", "set status enable"]
+        },
+        "result_message": {
+            "pass": "FortiAnalyzer logging is enabled",
+            "fail": "FortiAnalyzer logging is not enabled"
+        },
+        "fix_commands": "config log fortianalyzer setting\n    set status enable\n    set server \"192.168.1.200\"\nend"
+    },
+    {
+        "id": "2.3.29",
+        "description": "Check SD-WAN configuration",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config system sdwan", "set status enable"]
+        },
+        "result_message": {
+            "pass": "SD-WAN is configured",
+            "fail": "SD-WAN is not configured"
+        },
+        "fix_commands": "config system sdwan\n    set status enable\nend"
+    },
+    {
+        "id": "2.3.30",
+        "description": "Check BGP neighbor authentication",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config router bgp", "set password"]
+        },
+        "result_message": {
+            "pass": "BGP neighbor authentication is configured",
+            "fail": "BGP neighbor authentication is not configured"
+        },
+        "fix_commands": "config router bgp\n    config neighbor\n        edit \"192.168.1.1\"\n            set password \"secure_password\"\n        next\n    end\nend"
+    },
+    {
+        "id": "2.3.31",
+        "description": "Check OSPF authentication",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config router ospf", "set authentication"]
+        },
+        "result_message": {
+            "pass": "OSPF authentication is configured",
+            "fail": "OSPF authentication is not configured"
+        },
+        "fix_commands": "config router ospf\n    config ospf-interface\n        edit \"ospf-intf\"\n            set authentication md5\n            set md5-key 1 \"secure_key\"\n        next\n    end\nend"
+    },
+{
+        "id": "Custom",
+        "description": "Check SSL VPN Non Standard Port",
+        "logic": {
+            "type": "complex_grep",
+            "patterns": [
+                {"pattern": "config vpn ssl settings", "negated": false},
+                {"pattern": "set port 443", "negated": true}
+		]
+        },
+        "result_message": {
+            "pass": "Non-standard SSL VPN port is configured or no port specified",
+            "fail": "Standard SSL VPN port (443) is configured"
+        },
+        "fix_commands": "config vpn ssl settings\n    set port 12345\nend"
+    },
+{
+        "id": "Custom",
+        "description": "Check limit users to one SSL VPN session at a time",
+        "logic": {
+            "type": "simple_grep",
+            "patterns": ["config vpn ssl settings", "set limit-user-logins-enable"]
+        },
+        "result_message": {
+            "pass": "User limited to one SSL VPN session at a time is configured",
+            "fail": "User limited to one SSL VPN session at a time is not configured"
+        },
+        "fix_commands": "config vpn ssl settings\n    limit-user-logins enable\nend"
+    }
+
+]
