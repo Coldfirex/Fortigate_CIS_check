@@ -8,6 +8,7 @@ Focused on:
   - Exanded CIS Controls checks
   - Additional Best Practices checks
   - Scanning multiple config files at same time
+  - Split out check definitions into own file for easier maintenance
   - Enhanced logging, auditing, and validation
 
 ## Purpose
