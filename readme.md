@@ -3,7 +3,7 @@
 ##
 Synced from Priyam Patel's repository.
 
-Focused on
+Focused on:
   - Enhancing the python implementation
   - Exanded CIS Controls checks
   - Additional Best Practices checks
