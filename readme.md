@@ -42,6 +42,7 @@ Choose the implementation that best suits your environment and requirements.
 - Required Python packages:
   ```
   pip install argparse logging typing
+  pip install tqdm
   ```
 - Access to FortiGate configuration file
 - Read permissions for the configuration file
@@ -55,8 +56,8 @@ Choose the implementation that best suits your environment and requirements.
 
 The script generates two output files in the current directory:
 
-1. CSV Report: `FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_YYYYMMDD_HHMMSS.csv`
-2. HTML Report: `FORTIGATE_7.0.x_CIS_BENCHMARK_v1.3.0_AUDIT_YYYYMMDD_HHMMSS.html`
+1. CSV Report: `AUDIT_YYYYMMDD_HHMMSS.csv`
+2. HTML Report: `AUDIT_YYYYMMDD_HHMMSS.html`
 
 ## Checks Performed
 
